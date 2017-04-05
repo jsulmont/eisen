@@ -6,28 +6,28 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "The Eisen Translator."
+(ns ^{:doc    "The Eisen Translator."
       :author "Armando Blancas"}
-  blancas.eisen.trans
+blancas.eisen.trans
   (:use [clojure.set :only (difference)]
         [blancas.morph.core :only (monad seqm)]
-	[blancas.morph.monads :only (either)]
-	[blancas.morph.transf :only (->left ->right get-se modify-se run-se)]))
+        [blancas.morph.monads :only (either)]
+        [blancas.morph.transf :only (->left ->right get-se modify-se run-se)]))
 
 
 ;; +-------------------------------------------------------------+
 ;; |                       Extensibility.                        |
 ;; +-------------------------------------------------------------+
 
-(def predefs #{'recur})     ;; Initial state of the environment.
+(def predefs #{'recur})                                     ;; Initial state of the environment.
 
-(def expr-trans (atom {}))  ;; User-defined table of expression ranslators.
-(def decl-trans (atom {}))  ;; User-defined table of declaration translators.
-(def auto-decls (atom {}))  ;; User-defined table of auto use decls for modules.
+(def expr-trans (atom {}))                                  ;; User-defined table of expression ranslators.
+(def decl-trans (atom {}))                                  ;; User-defined table of declaration translators.
+(def auto-decls (atom {}))                                  ;; User-defined table of auto use decls for modules.
 
 (def ^:dynamic code-hook "A transformation of the generated code." identity)
 
-(def using-model (atom false)) ;; Using a host model for overrides?
+(def using-model (atom false))                              ;; Using a host model for overrides?
 
 
 (defn add-expr-trans
@@ -52,7 +52,7 @@
 ;; +-------------------------------------------------------------+
 
 
-(def sym-tbl (list predefs))  ;; Symbol Table as a list of sets.
+(def sym-tbl (list predefs))                                ;; Symbol Table as a list of sets.
 
 
 (defn push
@@ -78,10 +78,10 @@
   "Composes an error message."
   [pos fmt & more]
   (let [row (:line pos)
-	col (:col pos)
-	loc (if (empty? (:src pos))
-	      (format "line %d, column %d\n" row col)
-	      (format "%s: line %d, column %d\n" (:src pos) row col))]
+        col (:col pos)
+        loc (if (empty? (:src pos))
+              (format "line %d, column %d\n" row col)
+              (format "%s: line %d, column %d\n" (:src pos) row col))]
     (str loc (apply format fmt more))))
 
 
@@ -117,7 +117,7 @@
 (defn ref-host [name]
   "Encodes a reference to a host data element."
   (let [letters (drop-while #(= % \_) name)
-	sym-name (symbol (clojure.string/join letters))]
+        sym-name (symbol (clojure.string/join letters))]
     `(let [v# (blancas.eisen.core/fetch ~sym-name)]
        (if (fn? v#) (v#) v#))))
 
@@ -125,7 +125,7 @@
 (defn host-func [name]
   "Encodes a reference to a host function."
   (let [letters (drop-while #(= % \_) name)
-	sym-name (symbol (clojure.string/join letters))]
+        sym-name (symbol (clojure.string/join letters))]
     `(blancas.eisen.core/fetch ~sym-name)))
 
 
@@ -141,9 +141,9 @@
   "Translates an AST into a Clojure namespace call."
   [ast]
   (let [sym-name (symbol (:name ast))
-	imports  (for [[key val] @auto-decls]
-		   (let [filters (for [[f m] val] `(~f ~m))]
-		     `(clojure.core/use '[~key ~@(apply concat filters)])))]
+        imports (for [[key val] @auto-decls]
+                  (let [filters (for [[f m] val] `(~f ~m))]
+                    `(clojure.core/use '[~key ~@(apply concat filters)])))]
     (->right `(do (clojure.core/ns ~sym-name) ~@imports))))
 
 
@@ -155,12 +155,12 @@
       (->right `(use '~sym-name))
       (let [names (fn [x] (map (comp symbol :value) (:value x)))]
         (case (:token qualify)
-	  :as   (->right `(clojure.core/require
-			    '[~sym-name :as ~(symbol (:value qualify))]))
-	  :only (->right `(clojure.core/use
-			    '[~sym-name :only ~(names qualify)]))
-	  :hide (->right `(clojure.core/use
-			    '[~sym-name :exclude ~(names qualify)])))))))
+          :as (->right `(clojure.core/require
+                          '[~sym-name :as ~(symbol (:value qualify))]))
+          :only (->right `(clojure.core/use
+                            '[~sym-name :only ~(names qualify)]))
+          :hide (->right `(clojure.core/use
+                            '[~sym-name :exclude ~(names qualify)])))))))
 
 
 (defn trans-val
@@ -168,7 +168,7 @@
   [{:keys [name value]}]
   (let [sym-name (symbol name)]
     (monad [val (trans-expr value)]
-      (->right `(def ~sym-name ~val)))))
+           (->right `(def ~sym-name ~val)))))
 
 
 (defn trans-fun
@@ -176,10 +176,10 @@
   [{:keys [name params value]}]
   (let [sym-name (symbol name)]
     (monad [env (trans-exprs params)
-	    _   (modify-se push (cons sym-name env))
-	    code (trans-expr value)
-	    _   (modify-se pop)]
-      (->right `(blancas.morph.core/defcurry ~sym-name ~env ~code)))))
+            _ (modify-se push (cons sym-name env))
+            code (trans-expr value)
+            _ (modify-se pop)]
+           (->right `(blancas.morph.core/defcurry ~sym-name ~env ~code)))))
 
 
 (defn trans-fwd
@@ -196,15 +196,15 @@
     (if (clazz? sym-name)
       (->right sym-name)
       (if (.startsWith value "_")
-	(->right (ref-host (name sym-name)))
+        (->right (ref-host (name sym-name)))
         (monad [env get-se]
-          (if (declared? env sym-name)
-            (->right (make-ref sym-name))
-	    (if-let [var-inst (resolve sym-name)]
-              (if (function? var-inst)
-	        (->right `(~sym-name))
-	        (->right sym-name))
-              (->left (error pos "undeclared identifier: %s" value)))))))))
+               (if (declared? env sym-name)
+                 (->right (make-ref sym-name))
+                 (if-let [var-inst (resolve sym-name)]
+                   (if (function? var-inst)
+                     (->right `(~sym-name))
+                     (->right sym-name))
+                   (->left (error pos "undeclared identifier: %s" value)))))))))
 
 
 (defn trans-idarg
@@ -214,30 +214,30 @@
     (if (.startsWith value "_")
       (->right (ref-host (name sym-name)))
       (monad [env get-se]
-        (if (declared? env sym-name)
-          (->right (make-ref sym-name))
-	  (if (resolve sym-name)
-	    (->right sym-name)
-            (->left (error pos "undeclared identifier: %s" value))))))))
+             (if (declared? env sym-name)
+               (->right (make-ref sym-name))
+               (if (resolve sym-name)
+                 (->right sym-name)
+                 (->left (error pos "undeclared identifier: %s" value))))))))
 
 
 (defn trans-funcall
   "Translates a function call."
   [name args]
   (let [value (:value name)
-	pos (:pos name)
-	sym-name (symbol value)]
+        pos (:pos name)
+        sym-name (symbol value)]
     (monad [env get-se
-	    lst (trans-exprs args)]
-      (if (.startsWith value "_")
-        (->right `(~(host-func value) ~@lst))
-        (if (declared? env sym-name)
-          (->right (list* sym-name lst))
-	  (if-let [var-inst (resolve sym-name)]
-            (if (function? var-inst)
-	      (->right (list* sym-name lst))
-	      (->left (error pos "%s is not a function" value)))
-            (->left (error pos "undeclared identifier: %s" value))))))))
+            lst (trans-exprs args)]
+           (if (.startsWith value "_")
+             (->right `(~(host-func value) ~@lst))
+             (if (declared? env sym-name)
+               (->right (list* sym-name lst))
+               (if-let [var-inst (resolve sym-name)]
+                 (if (function? var-inst)
+                   (->right (list* sym-name lst))
+                   (->left (error pos "%s is not a function" value)))
+                 (->left (error pos "undeclared identifier: %s" value))))))))
 
 
 (defn trans-macrocall
@@ -245,24 +245,24 @@
   [name args]
   (let [sym-name (symbol (:value name))]
     (monad [lst (trans-exprs args)]
-      (->right (list* sym-name lst)))))
+           (->right (list* sym-name lst)))))
 
 
 (defn trans-binop
   "Translates the application of a binary operator."
   [ast]
   (monad [x (trans-expr (:left ast))
-	  y (trans-expr (:right ast))]
-    (let [f (-> ast :op :value str symbol)]
-      (->right `(~f ~x ~y)))))
+          y (trans-expr (:right ast))]
+         (let [f (-> ast :op :value str symbol)]
+           (->right `(~f ~x ~y)))))
 
 
 (defn trans-uniop
   "Translates the application of a unary operator."
   [ast]
   (monad [y (trans-expr (:right ast))]
-    (let [f (-> ast :op :value str symbol)]
-      (->right `(~f ~y)))))
+         (let [f (-> ast :op :value str symbol)]
+           (->right `(~f ~y)))))
 
 
 (defn trans-cond
@@ -270,11 +270,11 @@
   [ast]
   (let [e (:else ast)]
     (monad [test (trans-expr (:test ast))
-	    then (trans-expr (:then ast))
-	    else (if e (trans-expr (:else ast)) (->right :empty))]
-      (if (= else :empty)
-        (->right `(if ~test ~then))
-        (->right `(if ~test ~then ~else))))))
+            then (trans-expr (:then ast))
+            else (if e (trans-expr (:else ast)) (->right :empty))]
+           (if (= else :empty)
+             (->right `(if ~test ~then))
+             (->right `(if ~test ~then ~else))))))
 
 
 (defn val-binding
@@ -282,18 +282,18 @@
   [ast]
   (let [name (symbol (:name ast))]
     (monad [val (trans-expr (:value ast))]
-      (->right [name val]))))
+           (->right [name val]))))
 
 
 (defn fun-binding
   "Translates a function binding."
   [{:keys [name params value]}]
   (let [sym (symbol name)]
-    (monad [env  (trans-exprs params)
-	    _    (modify-se push env)
-	    code (trans-expr value)
-	    _    (modify-se pop)]
-      (->right [sym `(blancas.morph.core/mcf ~env ~code)]))))
+    (monad [env (trans-exprs params)
+            _ (modify-se push env)
+            code (trans-expr value)
+            _ (modify-se pop)]
+           (->right [sym `(blancas.morph.core/mcf ~env ~code)]))))
 
 
 (defn trans-binding
@@ -316,11 +316,11 @@
   "Translates a let expression."
   [{:keys [decls exprs]}]
   (let [env (map (comp symbol :name) decls)]
-    (monad [_     (modify-se push env)
-	    decls (trans-bindings decls)
+    (monad [_ (modify-se push env)
+            decls (trans-bindings decls)
             exprs (trans-exprs exprs)
-	    _     (modify-se pop)]
-      (->right `(let [~@(apply concat decls)] ~@exprs)))))
+            _ (modify-se pop)]
+           (->right `(let [~@(apply concat decls)] ~@exprs)))))
 
 
 (defn val-binding-letrec
@@ -328,18 +328,18 @@
   [ast]
   (let [name (symbol (:name ast))]
     (monad [val (trans-expr (:value ast))]
-      (->right (list name [] val)))))
+           (->right (list name [] val)))))
 
 
 (defn fun-binding-letrec
   "Translates a function binding in a letrec expression."
   [{:keys [name params value]}]
   (let [sym (symbol name)]
-    (monad [env  (trans-exprs params)
-	    _    (modify-se push env)
-	    code (trans-expr value)
-	    _    (modify-se pop)]
-      (->right (list sym env code)))))
+    (monad [env (trans-exprs params)
+            _ (modify-se push env)
+            code (trans-expr value)
+            _ (modify-se pop)]
+           (->right (list sym env code)))))
 
 
 (defn trans-binding-letrec
@@ -354,30 +354,30 @@
   "Translates a letrec expression."
   [{:keys [decls exprs]}]
   (let [env (map (comp symbol :name) decls)]
-    (monad [_     (modify-se push env)
-	    decls (seqm (map trans-binding-letrec decls))
+    (monad [_ (modify-se push env)
+            decls (seqm (map trans-binding-letrec decls))
             exprs (trans-exprs exprs)
-	    _     (modify-se pop)]
-      (->right `(letfn [~@decls] ~@exprs)))))
+            _ (modify-se pop)]
+           (->right `(letfn [~@decls] ~@exprs)))))
 
 
 (defn trans-funlit
   "Translates an AST into a Clojure anonymous function."
   [{:keys [params value]}]
-  (monad [env  (trans-exprs params)
-	  _    (modify-se push env)
-	  code (trans-expr value)
-	  _    (modify-se pop)]
-    (->right `(blancas.morph.core/mcf ~env ~code))))
+  (monad [env (trans-exprs params)
+          _ (modify-se push env)
+          code (trans-expr value)
+          _ (modify-se pop)]
+         (->right `(blancas.morph.core/mcf ~env ~code))))
 
 
 (defn trans-setqex
   "Translates a setq statement."
   [{:keys [name value]}]
   (monad [source (trans-expr value)]
-    (if @using-model
-      (->right `(blancas.eisen.core/host-model ~(symbol name) ~source))
-      (->right `(alter-var-root (var ~(symbol name)) (constantly ~source))))))
+         (if @using-model
+           (->right `(blancas.eisen.core/host-model ~(symbol name) ~source))
+           (->right `(alter-var-root (var ~(symbol name)) (constantly ~source))))))
 
 
 (defn trans-setvex
@@ -386,73 +386,73 @@
   (if @using-model
     (->right `(blancas.eisen.core/host-model ~(symbol name) ~(symbol value)))
     (->right `(alter-var-root (var ~(symbol name))
-			      (constantly ~(symbol value))))))
+                              (constantly ~(symbol value))))))
 
 
-  (defn trans-expr
+(defn trans-expr
   "Translates an AST into a Clojure expression."
   [ast]
   (case (:token ast)
-    (:new-line :char-lit  :string-lit :dec-lit  :oct-lit
-     :hex-lit  :float-lit :bool-lit   :nil-lit  :semi
-     :comma    :colon     :dot        :keyword  :re-lit)
-                 (->right (:value ast))
+    (:new-line :char-lit :string-lit :dec-lit :oct-lit
+      :hex-lit :float-lit :bool-lit :nil-lit :semi
+      :comma :colon :dot :keyword :re-lit)
+    (->right (:value ast))
 
     (:id-formal :sym-arg)
-		 (->right (-> ast :value symbol))
+    (->right (-> ast :value symbol))
 
-    :id-arg      (trans-idarg ast)
+    :id-arg (trans-idarg ast)
 
-    :identifier  (trans-identifier ast)
+    :identifier (trans-identifier ast)
 
-    :fun-call    (let [val (:value ast)]
-                   (trans-funcall (first val) (rest val)))
+    :fun-call (let [val (:value ast)]
+                (trans-funcall (first val) (rest val)))
 
-    :macro-call  (let [val (:value ast)]
-                   (trans-macrocall (first val) (rest val)))
+    :macro-call (let [val (:value ast)]
+                  (trans-macrocall (first val) (rest val)))
 
-    :list-range  (monad [vals (trans-exprs (:value ast))]
-		   (->right `(clojure.core/list*
-			       (clojure.core/range
-				 ~(first vals)
-				  (clojure.core/inc ~(second vals))))))
+    :list-range (monad [vals (trans-exprs (:value ast))]
+                       (->right `(clojure.core/list*
+                                   (clojure.core/range
+                                     ~(first vals)
+                                     (clojure.core/inc ~(second vals))))))
 
-    :list-lit    (monad [vals (trans-exprs (:value ast))]
-                   (->right `(clojure.core/list ~@vals)))
+    :list-lit (monad [vals (trans-exprs (:value ast))]
+                     (->right `(clojure.core/list ~@vals)))
 
-    :vec-range   (monad [vals (trans-exprs (:value ast))]
-		   (->right `(clojure.core/vec
-			       (clojure.core/range
-				 ~(first vals)
-				  (clojure.core/inc ~(second vals))))))
+    :vec-range (monad [vals (trans-exprs (:value ast))]
+                      (->right `(clojure.core/vec
+                                  (clojure.core/range
+                                    ~(first vals)
+                                    (clojure.core/inc ~(second vals))))))
 
-    :vector-lit  (monad [vals (trans-exprs (:value ast))]
-                   (->right vals))
+    :vector-lit (monad [vals (trans-exprs (:value ast))]
+                       (->right vals))
 
-    :set-lit     (monad [vals (trans-exprs (:value ast))]
-                   (->right (set vals)))
+    :set-lit (monad [vals (trans-exprs (:value ast))]
+                    (->right (set vals)))
 
-    :map-lit     (monad [vals (trans-exprs (:value ast))]
-                   (->right (apply hash-map vals)))
+    :map-lit (monad [vals (trans-exprs (:value ast))]
+                    (->right (apply hash-map vals)))
 
-    :seq-expr    (monad [vals (trans-exprs (:value ast))]
-                   (->right `(do ~@vals)))
+    :seq-expr (monad [vals (trans-exprs (:value ast))]
+                     (->right `(do ~@vals)))
 
-    :BINOP       (trans-binop ast)
+    :BINOP (trans-binop ast)
 
-    :UNIOP       (trans-uniop ast)
+    :UNIOP (trans-uniop ast)
 
-    :cond-expr   (trans-cond ast)
+    :cond-expr (trans-cond ast)
 
-    :let-expr    (trans-let ast)
+    :let-expr (trans-let ast)
 
     :letrec-expr (trans-letrec ast)
 
-    :fun-lit     (trans-funlit ast)
+    :fun-lit (trans-funlit ast)
 
-    :setq-expr   (trans-setqex ast)
+    :setq-expr (trans-setqex ast)
 
-    :setv-expr   (trans-setvex ast)
+    :setv-expr (trans-setvex ast)
 
     ;; User-defined expression translator.
 
@@ -473,16 +473,16 @@
   "Translates a collection of AST maps into unevaluated Clojure forms."
   [ast]
   (let [token (:token ast)]
-    (case (:token ast)  
-      :val  (trans-val ast)
-      :fun  (trans-fun ast)
-      :fwd  (trans-fwd ast)
-      :mod  (trans-mod ast)
-      :imp  (trans-imp ast)
+    (case (:token ast)
+      :val (trans-val ast)
+      :fun (trans-fun ast)
+      :fwd (trans-fwd ast)
+      :mod (trans-mod ast)
+      :imp (trans-imp ast)
       ;; User-defined expression translator.
       (if-let [trans (token @decl-trans)]
-	(trans ast)
-	(trans-expr ast)))))
+        (trans ast)
+        (trans-expr ast)))))
 
 
 (defn eval-ast
@@ -490,11 +490,11 @@
    generated code and the result of the evaluation."
   [ast]
   (monad [code (trans-ast ast)]
-    (let [code (code-hook code)]
-      (try
-        (->right [code (eval code)])
-        (catch Throwable t
-	  (->left [code (str t)]))))))
+         (let [code (code-hook code)]
+           (try
+             (->right [code (eval code)])
+             (catch Throwable t
+               (->left [code (str t)]))))))
 
 
 (defn trans
@@ -507,5 +507,5 @@
   [coll]
   (let [job (seqm (map eval-ast coll))]
     (either [res (run-se job sym-tbl)]
-      {:ok false :error res}
-      {:ok true :decls (map first res) :value (-> res last second)})))
+            {:ok false :error res}
+            {:ok true :decls (map first res) :value (-> res last second)})))

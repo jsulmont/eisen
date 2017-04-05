@@ -8,9 +8,9 @@
 
 (ns blancas.eisen.test-eisen
   (:use [clojure.test]
-	[blancas.eisen.core]
-	[blancas.morph.core :only (defcurry)]
-	[midje.sweet :exclude (expect one-of)]))
+        [blancas.eisen.core]
+        [blancas.morph.core :only (defcurry)]
+        [midje.sweet :exclude (expect one-of)]))
 
 
 ;; +-------------------------------------------------------------+
@@ -20,236 +20,236 @@
 
 (deftest test-0000
   (fact "power of"
-    (let [p1 (eisen "2 ** 8")]
-      (:value p1)) => 256
-    (let [p1 (eisen "5 ** 2 ** 3")]
-      (:value p1)) => 390625))
+        (let [p1 (eisen "2 ** 8")]
+          (:value p1)) => 256
+        (let [p1 (eisen "5 ** 2 ** 3")]
+          (:value p1)) => 390625))
 
 
 (deftest test-0005
   (fact "logical not"
-    (let [p1 (eisen "!true")]
-      (:value p1)) => false
-    (let [p1 (eisen "!false")]
-      (:value p1)) => true
-    (let [p1 (eisen "!!true")]
-      (:value p1)) => true))
+        (let [p1 (eisen "!true")]
+          (:value p1)) => false
+        (let [p1 (eisen "!false")]
+          (:value p1)) => true
+        (let [p1 (eisen "!!true")]
+          (:value p1)) => true))
 
 
 (deftest test-0010
   (fact "bitwise not"
-    (let [p1 (eisen "~0xF0F0F0F0 & 0xFFFFFFFF")]
-      (:value p1)) => 0xF0F0F0F))
+        (let [p1 (eisen "~0xF0F0F0F0 & 0xFFFFFFFF")]
+          (:value p1)) => 0xF0F0F0F))
 
 
 (deftest test-0015
   (fact "unary plus"
-    (let [p1 (eisen "+500")]
-      (:value p1)) => 500))
+        (let [p1 (eisen "+500")]
+          (:value p1)) => 500))
 
 
 (deftest test-0020
   (fact "unary minus"
-    (let [p1 (eisen "-500")]
-      (:value p1)) => -500))
+        (let [p1 (eisen "-500")]
+          (:value p1)) => -500))
 
 
 (deftest test-0025
   (fact "integer division -- quot"
-    (let [p1 (eisen "11 \\ 3")]
-      (:value p1)) => 3))
+        (let [p1 (eisen "11 \\ 3")]
+          (:value p1)) => 3))
 
 
 (deftest test-0030
   (fact "modulo -- mod"
-    (let [p1 (eisen "11 % 3")]
-      (:value p1)) => 2))
+        (let [p1 (eisen "11 % 3")]
+          (:value p1)) => 2))
 
 
 (deftest test-0035
   (fact "multiplication"
-    (let [p1 (eisen "11 * 3")]
-      (:value p1)) => 33
-    (let [p1 (eisen "11.0 * 3")]
-      (:value p1)) => 33.0
-    (let [p1 (eisen "6 * (1 /3)")]
-      (:value p1)) => 2))
+        (let [p1 (eisen "11 * 3")]
+          (:value p1)) => 33
+        (let [p1 (eisen "11.0 * 3")]
+          (:value p1)) => 33.0
+        (let [p1 (eisen "6 * (1 /3)")]
+          (:value p1)) => 2))
 
 
 (deftest test-0040
   (fact "division with floating-point numbers"
-    (let [p1 (eisen "5.0 / 2.0")]
-      (:value p1)) => 2.5
-    (let [p1 (eisen "5.0 / 2")]
-      (:value p1)) => 2.5
-    (let [p1 (eisen "5 / 2.0")]
-      (:value p1)) => 2.5))
+        (let [p1 (eisen "5.0 / 2.0")]
+          (:value p1)) => 2.5
+        (let [p1 (eisen "5.0 / 2")]
+          (:value p1)) => 2.5
+        (let [p1 (eisen "5 / 2.0")]
+          (:value p1)) => 2.5))
 
 
 (deftest test-0045
   (fact "ratio with integer numbers"
-    (let [p1 (eisen "11 / 3")]
-      (:value p1)) => (/ 11 3)))
+        (let [p1 (eisen "11 / 3")]
+          (:value p1)) => (/ 11 3)))
 
 
 (deftest test-0050
   (fact "addition"
-    (let [p1 (eisen "3 + 4")]
-      (:value p1)) => 7
-    (let [p1 (eisen "11.0 + 3.0")]
-      (:value p1)) => 14.0
-    (let [p1 (eisen "3 / 4 + 2 / 8")]
-      (:value p1)) => 1))
+        (let [p1 (eisen "3 + 4")]
+          (:value p1)) => 7
+        (let [p1 (eisen "11.0 + 3.0")]
+          (:value p1)) => 14.0
+        (let [p1 (eisen "3 / 4 + 2 / 8")]
+          (:value p1)) => 1))
 
 
 (deftest test-0055
   (fact "subtraction"
-    (let [p1 (eisen "10 - 4")]
-      (:value p1)) => 6
-    (let [p1 (eisen "4 - 10")]
-      (:value p1)) => -6
-    (let [p1 (eisen "4 - -10")]
-      (:value p1)) => 14
-    (let [p1 (eisen "11.0 - 3.0")]
-      (:value p1)) => 8.0
-    (let [p1 (eisen "3 / 4 - 2 / 8")]
-      (:value p1)) => (/ 1 2)))
+        (let [p1 (eisen "10 - 4")]
+          (:value p1)) => 6
+        (let [p1 (eisen "4 - 10")]
+          (:value p1)) => -6
+        (let [p1 (eisen "4 - -10")]
+          (:value p1)) => 14
+        (let [p1 (eisen "11.0 - 3.0")]
+          (:value p1)) => 8.0
+        (let [p1 (eisen "3 / 4 - 2 / 8")]
+          (:value p1)) => (/ 1 2)))
 
 
 (deftest test-0055
   (fact "construct (:) -- flip conj"
-    (let [p1 (eisen "0 : [1,2,3]")]
-      (:value p1)) => '(0 1 2 3)
-    (let [p1 (eisen "0:[1,2,3]")]
-      (:value p1)) => '(0 1 2 3)
-    (let [p1 (eisen "0 : 1 : 2 : 3 : []")]
-      (:value p1)) => '(0 1 2 3)
-    (let [p1 (eisen "0:1:2:3:[]")]
-      (:value p1)) => '(0 1 2 3)))
+        (let [p1 (eisen "0 : [1,2,3]")]
+          (:value p1)) => '(0 1 2 3)
+        (let [p1 (eisen "0:[1,2,3]")]
+          (:value p1)) => '(0 1 2 3)
+        (let [p1 (eisen "0 : 1 : 2 : 3 : []")]
+          (:value p1)) => '(0 1 2 3)
+        (let [p1 (eisen "0:1:2:3:[]")]
+          (:value p1)) => '(0 1 2 3)))
 
 
 (deftest test-0100
   (fact "concat (++)"
-    (let [p1 (eisen "[0,1,2] ++ [3,4,5]")]
-      (:value p1)) => '(0 1 2 3 4 5)
-    (let [p1 (eisen "[0,1,2] ++ [3,4,5] ++ [6,7,8]")]
-      (:value p1)) => '(0 1 2 3 4 5 6 7 8)
-    (let [p1 (eisen "0:[1,2] ++ 3:[4,5]")]
-      (:value p1)) => '(0 1 2 3 4 5)))
+        (let [p1 (eisen "[0,1,2] ++ [3,4,5]")]
+          (:value p1)) => '(0 1 2 3 4 5)
+        (let [p1 (eisen "[0,1,2] ++ [3,4,5] ++ [6,7,8]")]
+          (:value p1)) => '(0 1 2 3 4 5 6 7 8)
+        (let [p1 (eisen "0:[1,2] ++ 3:[4,5]")]
+          (:value p1)) => '(0 1 2 3 4 5)))
 
 
 (deftest test-0120
   (fact "shift left"
-    (let [p1 (eisen "2 << 8")]
-      (:value p1)) => 512
-    (let [p1 (eisen "0x0F << 4")]
-      (:value p1)) => 0xF0))
+        (let [p1 (eisen "2 << 8")]
+          (:value p1)) => 512
+        (let [p1 (eisen "0x0F << 4")]
+          (:value p1)) => 0xF0))
 
 
 (deftest test-0130
   (fact "shift right"
-    (let [p1 (eisen "512 >> 8")]
-      (:value p1)) => 2
-    (let [p1 (eisen "0xF0 >> 4")]
-      (:value p1)) => 0x0F))
+        (let [p1 (eisen "512 >> 8")]
+          (:value p1)) => 2
+        (let [p1 (eisen "0xF0 >> 4")]
+          (:value p1)) => 0x0F))
 
 
 (deftest test-0140
   (fact "bit and"
-    (let [p1 (eisen "4 & 8")]
-      (:value p1)) => 0
-    (let [p1 (eisen "0xCAFE45 & 0x0000FF")]
-      (:value p1)) => 0x45
-    (let [p1 (eisen "0xCAFE45 & 0xFFFF00")]
-      (:value p1)) => 0xCAFE00))
+        (let [p1 (eisen "4 & 8")]
+          (:value p1)) => 0
+        (let [p1 (eisen "0xCAFE45 & 0x0000FF")]
+          (:value p1)) => 0x45
+        (let [p1 (eisen "0xCAFE45 & 0xFFFF00")]
+          (:value p1)) => 0xCAFE00))
 
 
 
 
 (deftest test-0150
   (fact "bit xor"
-    (let [p1 (eisen "4 ^ 8")]
-      (:value p1)) => 12
-    (let [p1 (eisen "12 ^ 10")]
-      (:value p1)) => 6
-    (let [p1 (eisen "0xCAFE ^ 0xBABE")]
-      (:value p1)) => 0x7040
-    (let [p1 (eisen "0xf03 ^ 0xf0c")]
-      (:value p1)) => 0xf))
+        (let [p1 (eisen "4 ^ 8")]
+          (:value p1)) => 12
+        (let [p1 (eisen "12 ^ 10")]
+          (:value p1)) => 6
+        (let [p1 (eisen "0xCAFE ^ 0xBABE")]
+          (:value p1)) => 0x7040
+        (let [p1 (eisen "0xf03 ^ 0xf0c")]
+          (:value p1)) => 0xf))
 
 
 (deftest test-0160
   (fact "bit or"
-    (let [p1 (eisen "4 | 8")]
-      (:value p1)) => 12
-    (let [p1 (eisen "0xCAFE00 | 0x000045")]
-      (:value p1)) => 0xCAFE45
-    (let [p1 (eisen "0x000045 | 0xCAFE00 ")]
-      (:value p1)) => 0xCAFE45))
+        (let [p1 (eisen "4 | 8")]
+          (:value p1)) => 12
+        (let [p1 (eisen "0xCAFE00 | 0x000045")]
+          (:value p1)) => 0xCAFE45
+        (let [p1 (eisen "0x000045 | 0xCAFE00 ")]
+          (:value p1)) => 0xCAFE45))
 
 
 (deftest test-0170
   (fact "relational operators"
-    (let [p1 (eisen "512 > 8")]
-      (:value p1)) => true
-    (let [p1 (eisen "8 > 512")]
-      (:value p1)) => false
-    (let [p1 (eisen "0xF0 < 4")]
-      (:value p1)) => false
-    (let [p1 (eisen "4 < 0xf0")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 >= 8")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 >= 512")]
-      (:value p1)) => true
-    (let [p1 (eisen "0xF0 <= 0xFF")]
-      (:value p1)) => true
-    (let [p1 (eisen "0xF0 <= 0xF0")]
-      (:value p1)) => true
-    (let [p1 (eisen "0xF0 <= 4")]
-      (:value p1)) => false))
+        (let [p1 (eisen "512 > 8")]
+          (:value p1)) => true
+        (let [p1 (eisen "8 > 512")]
+          (:value p1)) => false
+        (let [p1 (eisen "0xF0 < 4")]
+          (:value p1)) => false
+        (let [p1 (eisen "4 < 0xf0")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 >= 8")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 >= 512")]
+          (:value p1)) => true
+        (let [p1 (eisen "0xF0 <= 0xFF")]
+          (:value p1)) => true
+        (let [p1 (eisen "0xF0 <= 0xF0")]
+          (:value p1)) => true
+        (let [p1 (eisen "0xF0 <= 4")]
+          (:value p1)) => false))
 
 
 (deftest test-0180
   (fact "equality operators"
-    (let [p1 (eisen "512 == 8")]
-      (:value p1)) => false
-    (let [p1 (eisen "512 == 512")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 != 8")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 != 512")]
-      (:value p1)) => false
-    (let [p1 (eisen "true == true")]
-      (:value p1)) => true
-    (let [p1 (eisen "false == false")]
-      (:value p1)) => true
-    (let [p1 (eisen "true != true")]
-      (:value p1)) => false
-    (let [p1 (eisen "true != false")]
-      (:value p1)) => true))
+        (let [p1 (eisen "512 == 8")]
+          (:value p1)) => false
+        (let [p1 (eisen "512 == 512")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 != 8")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 != 512")]
+          (:value p1)) => false
+        (let [p1 (eisen "true == true")]
+          (:value p1)) => true
+        (let [p1 (eisen "false == false")]
+          (:value p1)) => true
+        (let [p1 (eisen "true != true")]
+          (:value p1)) => false
+        (let [p1 (eisen "true != false")]
+          (:value p1)) => true))
 
 
 (deftest test-0190
   (fact "logical and"
-    (let [p1 (eisen "512 > 8 && 5 < 10")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 == 0 && 5 < 10")]
-      (:value p1)) => false
-    (let [p1 (eisen "512 > 0 && 50 < 10")]
-      (:value p1)) => false))
+        (let [p1 (eisen "512 > 8 && 5 < 10")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 == 0 && 5 < 10")]
+          (:value p1)) => false
+        (let [p1 (eisen "512 > 0 && 50 < 10")]
+          (:value p1)) => false))
 
 
 (deftest test-0200
   (fact "logical or"
-    (let [p1 (eisen "512 > 8 || 5 < 10")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 == 0 || 5 < 10")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 > 0 || 50 < 10")]
-      (:value p1)) => true
-    (let [p1 (eisen "512 < 0 || 50 < 10")]
-      (:value p1)) => false))
+        (let [p1 (eisen "512 > 8 || 5 < 10")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 == 0 || 5 < 10")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 > 0 || 50 < 10")]
+          (:value p1)) => true
+        (let [p1 (eisen "512 < 0 || 50 < 10")]
+          (:value p1)) => false))
 
 
 ;; +-------------------------------------------------------------+
@@ -259,22 +259,22 @@
 
 (deftest test-0400
   (fact "precedence"
-    (let [p1 (eisen "~2**8")]
-      (:value p1)) => -257
-    (let [p1 (eisen "5 * 20 \\ 4")]
-      (:value p1)) => 25
-    (let [p1 (eisen "3 * 8 % 5 + 1")]
-      (:value p1)) => 5
-    (let [p1 (eisen "3 * 8 - 4 * 4 + 2 ** 3")]
-      (:value p1)) => 16
-    (let [p1 (eisen "256 >> 3 + 2")]
-      (:value p1)) => 8
-    (let [p1 (eisen "4 | 8 > 10")]
-      (:value p1)) => true
-    (let [p1 (eisen "4 | 8 > 10 && 100 == 50 + 50")]
-      (:value p1)) => true
-    (let [p1 (eisen "4 | 8 > 100 && 100 == 50 + 50 || 1 << 8 > 0xFF")]
-      (:value p1)) => true))
+        (let [p1 (eisen "~2**8")]
+          (:value p1)) => -257
+        (let [p1 (eisen "5 * 20 \\ 4")]
+          (:value p1)) => 25
+        (let [p1 (eisen "3 * 8 % 5 + 1")]
+          (:value p1)) => 5
+        (let [p1 (eisen "3 * 8 - 4 * 4 + 2 ** 3")]
+          (:value p1)) => 16
+        (let [p1 (eisen "256 >> 3 + 2")]
+          (:value p1)) => 8
+        (let [p1 (eisen "4 | 8 > 10")]
+          (:value p1)) => true
+        (let [p1 (eisen "4 | 8 > 10 && 100 == 50 + 50")]
+          (:value p1)) => true
+        (let [p1 (eisen "4 | 8 > 100 && 100 == 50 + 50 || 1 << 8 > 0xFF")]
+          (:value p1)) => true))
 
 
 ;; +-------------------------------------------------------------+
@@ -284,34 +284,34 @@
 
 (deftest test-0500
   (fact "declare a value"
-    (let [_ (eisen "val v1 = 99")]
-      (eisen= "v1")) => 99
-    (let [_ (eisen "val v2 = false")]
-      (eisen= "v2")) => false
-    (let [_ (eisen "val v3 = 'z'")]
-      (eisen= "v3")) => \z
-    (let [_ (eisen "val v4 = 3.1415927")]
-      (eisen= "v4")) => 3.1415927
-    (let [_ (eisen "val v5 = [1,2,3,4,5]")]
-      (eisen= "v5")) => '(1 2 3 4 5)
-    (let [_ (eisen "val v6 = #[1,2,3,4,5]")]
-      (eisen= "v6")) => [1 2 3 4 5]
-    (let [_ (eisen "val v7 = #[10,25] ++ [30,45]")]
-      (eisen= "v7")) => [10 25 30 45]
-    (let [_ (eisen "val v8 = #{1,2,3,4,5}")]
-      (eisen= "v8")) => #{1 2 3 4 5}
-    (let [_ (eisen "val v9 = map inc #[0,2,4,6,8]")]
-      (eisen= "v9")) => [1,3,5,7,9]))
+        (let [_ (eisen "val v1 = 99")]
+          (eisen= "v1")) => 99
+        (let [_ (eisen "val v2 = false")]
+          (eisen= "v2")) => false
+        (let [_ (eisen "val v3 = 'z'")]
+          (eisen= "v3")) => \z
+        (let [_ (eisen "val v4 = 3.1415927")]
+          (eisen= "v4")) => 3.1415927
+        (let [_ (eisen "val v5 = [1,2,3,4,5]")]
+          (eisen= "v5")) => '(1 2 3 4 5)
+        (let [_ (eisen "val v6 = #[1,2,3,4,5]")]
+          (eisen= "v6")) => [1 2 3 4 5]
+        (let [_ (eisen "val v7 = #[10,25] ++ [30,45]")]
+          (eisen= "v7")) => [10 25 30 45]
+        (let [_ (eisen "val v8 = #{1,2,3,4,5}")]
+          (eisen= "v8")) => #{1 2 3 4 5}
+        (let [_ (eisen "val v9 = map inc #[0,2,4,6,8]")]
+          (eisen= "v9")) => [1, 3, 5, 7, 9]))
 
 
 (deftest test-0505
   (fact "declare multiple values"
-    (let [_ (eisen "val v1 = 99\nval v2 = 0\nval v3 = -1")]
-      (eisen= "[v1,v2,v3]")) => [99 0 -1]
-    (let [_ (eisen "val v1 = 99; v2 = 0; v3 = -1")]
-      (eisen= "[v1,v2,v3]")) => [99 0 -1]
-    (let [_ (eisen "val\n    v1 = 99;\n    v2 = 0;\n    v3 = -1")]
-      (eisen= "[v1,v2,v3]")) => [99 0 -1]))
+        (let [_ (eisen "val v1 = 99\nval v2 = 0\nval v3 = -1")]
+          (eisen= "[v1,v2,v3]")) => [99 0 -1]
+        (let [_ (eisen "val v1 = 99; v2 = 0; v3 = -1")]
+          (eisen= "[v1,v2,v3]")) => [99 0 -1]
+        (let [_ (eisen "val\n    v1 = 99;\n    v2 = 0;\n    v3 = -1")]
+          (eisen= "[v1,v2,v3]")) => [99 0 -1]))
 
 
 ;; +-------------------------------------------------------------+
@@ -321,27 +321,27 @@
 
 (deftest test-0600
   (fact "referencing values"
-    (let [_ (eisen "val v1 = 12; v2 = 10")]
-      (eisen= "v1+v2")) => 22
-    (let [_ (eisen "val v3 = 12; v4 = 10")]
-      (eisen= "v3 * v4")) => 120
-    (let [_ (eisen "val v5 = 12; v6 = 10")]
-      (eisen= "v5 % v6")) => 2
-    (let [_ (eisen "val v7 = 12; v8 = 10")]
-      (eisen= "v8 / v7")) => (/ 10 12)
-    (let [_ (eisen "val v9 = 12; v10 = 10")]
-      (eisen= "v9 + v10 + v9 * v10")) => 142
-    (let [_ (eisen "val v11 = 12; v12 = 10")]
-      (eisen= "v11+v12+v11*v12")) => 142
-    (let [_ (eisen "val op01 = 99")]
-      (eisen= "op01+1")) => 100
-    (let [_ (eisen "val op01 = 99")]
-      (eisen= "op01-1")) => 98))
+        (let [_ (eisen "val v1 = 12; v2 = 10")]
+          (eisen= "v1+v2")) => 22
+        (let [_ (eisen "val v3 = 12; v4 = 10")]
+          (eisen= "v3 * v4")) => 120
+        (let [_ (eisen "val v5 = 12; v6 = 10")]
+          (eisen= "v5 % v6")) => 2
+        (let [_ (eisen "val v7 = 12; v8 = 10")]
+          (eisen= "v8 / v7")) => (/ 10 12)
+        (let [_ (eisen "val v9 = 12; v10 = 10")]
+          (eisen= "v9 + v10 + v9 * v10")) => 142
+        (let [_ (eisen "val v11 = 12; v12 = 10")]
+          (eisen= "v11+v12+v11*v12")) => 142
+        (let [_ (eisen "val op01 = 99")]
+          (eisen= "op01+1")) => 100
+        (let [_ (eisen "val op01 = 99")]
+          (eisen= "op01-1")) => 98))
 
 
 (deftest test-0605
   (fact "referencing a Java class"
-    (eisen= "java.lang.String") => java.lang.String))
+        (eisen= "java.lang.String") => java.lang.String))
 
 
 ;; +-------------------------------------------------------------+
@@ -351,27 +351,27 @@
 
 (deftest test-0700
   (fact "calling functions"
-    (eisen= "inc 10") => 11
-    (eisen= "map inc [1,2,3,4,5]") => '(2 3 4 5 6)
-    (eisen= "range 250 260 2") => '(250 252 254 256 258)
-    (eisen= "take 5 (range 50 60)") => '(50 51 52 53 54))
+        (eisen= "inc 10") => 11
+        (eisen= "map inc [1,2,3,4,5]") => '(2 3 4 5 6)
+        (eisen= "range 250 260 2") => '(250 252 254 256 258)
+        (eisen= "take 5 (range 50 60)") => '(50 51 52 53 54))
   (fact "calling a function on a declared value"
-    (let [_ (eisen "val foo = 5005")]
-      (eisen= "inc foo")) => 5006))
+        (let [_ (eisen "val foo = 5005")]
+          (eisen= "inc foo")) => 5006))
 
 
 (deftest test-0705
   (fact "calling user-defined functions as binary operators"
-    (let [_ (eisen "fun sum x y  =  x + y")]
-      (eisen= "3 .sum. 4")) => 7
-    (let [_ (eisen "fun mul x y  =  x * y")]
-      (eisen= "3 .mul. 4")) => 12))
+        (let [_ (eisen "fun sum x y  =  x + y")]
+          (eisen= "3 .sum. 4")) => 7
+        (let [_ (eisen "fun mul x y  =  x * y")]
+          (eisen= "3 .mul. 4")) => 12))
 
 
 (deftest test-0705
   (fact "calling lisp functions with non-Eisen names"
-    (eisen= "`+'` 3 4") => 7
-    (eisen= "3 .+'. 4") => 7))
+        (eisen= "`+'` 3 4") => 7
+        (eisen= "3 .+'. 4") => 7))
 
 
 ;; +-------------------------------------------------------------+
@@ -381,9 +381,9 @@
 
 (deftest test-0800
   (fact "sequenced expressions as arguments; alternative to do ... end"
-    (eisen= "identity (1+1; 2+2; 3+3)") => 6
-    (eisen= "identity (inc 0; inc 1)") => 2
-    (eisen= "identity (inc 0; map inc [1,2,3,4])") => '(2 3 4 5)))
+        (eisen= "identity (1+1; 2+2; 3+3)") => 6
+        (eisen= "identity (inc 0; inc 1)") => 2
+        (eisen= "identity (inc 0; map inc [1,2,3,4])") => '(2 3 4 5)))
 
 
 ;; +-------------------------------------------------------------+
@@ -393,34 +393,34 @@
 
 (deftest test-0900
   (fact "simple conditional expression"
-    (eisen= "if true then 1") => 1
-    (eisen= "if false then 1") => nil
-    (eisen= "if zero? 0 then 500") => 500
-    (eisen= "if zero? 0 then 3 + 4") => 7
-    (eisen= "if zero? 1 then 100") => nil))
+        (eisen= "if true then 1") => 1
+        (eisen= "if false then 1") => nil
+        (eisen= "if zero? 0 then 500") => 500
+        (eisen= "if zero? 0 then 3 + 4") => 7
+        (eisen= "if zero? 1 then 100") => nil))
 
 
 (deftest test-0905
   (fact "simple conditional expression with an else"
-    (eisen= "if true then 1 else 0") => 1
-    (eisen= "if false then 1 else 0") => 0
-    (eisen= "if zero? 0 then 500 else -1") => 500
-    (eisen= "if zero? 0 then -1 else 3 + 4") => -1
-    (eisen= "if zero? 1 then 100 else 99") => 99))
+        (eisen= "if true then 1 else 0") => 1
+        (eisen= "if false then 1 else 0") => 0
+        (eisen= "if zero? 0 then 500 else -1") => 500
+        (eisen= "if zero? 0 then -1 else 3 + 4") => -1
+        (eisen= "if zero? 1 then 100 else 99") => 99))
 
 
 (deftest test-0910
   (fact "simple, nested conditional expression"
-    (eisen= "if zero? 0 then if 1 > 0 then if even? 2 then 99") => 99
-    (eisen= "if zero? 0 then if 1 > 0 then if odd? 2 then 99 else 8") => 8
-    (eisen= "if zero? 0 then if 1 > 9 then if odd? 2 then 99 else 8 else 5") => 5))
+        (eisen= "if zero? 0 then if 1 > 0 then if even? 2 then 99") => 99
+        (eisen= "if zero? 0 then if 1 > 0 then if odd? 2 then 99 else 8") => 8
+        (eisen= "if zero? 0 then if 1 > 9 then if odd? 2 then 99 else 8 else 5") => 5))
 
 
 (deftest test-0915
   (fact "simple, nested conditional expression with else"
-    (let [_ (eisen= "val t915 = 5")]
-      (eisen= "if t915 == 0 then 0 else if t915 == 1 then 1 else if t915 == 5 then 5")
-       => 5)))
+        (let [_ (eisen= "val t915 = 5")]
+          (eisen= "if t915 == 0 then 0 else if t915 == 1 then 1 else if t915 == 5 then 5")
+          => 5)))
 
 
 ;; +-------------------------------------------------------------+
@@ -431,17 +431,17 @@
 (deftest test-1000
   (eisen= "fun const = 99")
   (fact "resolve a defined function --no args"
-    (-> 'const resolve var-get fn?) => true)
+        (-> 'const resolve var-get fn?) => true)
   (fact "call a defined function"
-    (eisen= "const") => 99))
+        (eisen= "const") => 99))
 
 
 (deftest test-1005
   (eisen= "fun plusOne n  =  inc n")
   (fact "resolve a defined function --one arg"
-    (-> 'plusOne resolve var-get fn?) => true)
+        (-> 'plusOne resolve var-get fn?) => true)
   (fact "call a defined function"
-    (eisen= "plusOne 99") => 100))
+        (eisen= "plusOne 99") => 100))
 
 
 (deftest test-1010
@@ -449,10 +449,10 @@
   (eisen= "fun add a b  = a + b")
   (eisen= "val plus5 = add 5")
   (fact "resolve a defined function --two args"
-    (-> 'add resolve var-get fn?) => true)
+        (-> 'add resolve var-get fn?) => true)
   (fact "call a defined function"
-	(eisen= "add 3 4") => 7
-	(eisen= "plus5 995") => 1000))
+        (eisen= "add 3 4") => 7
+        (eisen= "plus5 995") => 1000))
 
 
 ;; +-------------------------------------------------------------+
@@ -462,59 +462,59 @@
 
 (deftest test-1100
   (let [code1 "let foo = 99 in foo end"
-	code2 "let foo = 99; in foo+1 end"]
+        code2 "let foo = 99; in foo+1 end"]
     (fact "let with a simple val"
-      (eisen= code1) => 99
-      (eisen= code2) => 100)))
+          (eisen= code1) => 99
+          (eisen= code2) => 100)))
 
 
 (deftest test-1105
   (let [code1 "let foo = 99; bar = 10 in foo - bar end"
-	code2 "let foo = 99; bar = 10; in foo * bar end"]
+        code2 "let foo = 99; bar = 10; in foo * bar end"]
     (fact "let with two bindings"
-      (eisen= code1) => 89
-      (eisen= code2) => 990)))
+          (eisen= code1) => 89
+          (eisen= code2) => 990)))
 
 
 (deftest test-1110
   (let [code1 "let foo = 99; bar = 10; baz = 5 in foo - bar * baz end"]
     (fact "let with three bindings, single var decl"
-      (eisen= code1) => 49)))
+          (eisen= code1) => 49)))
 
 
 (deftest test-1115
   (let [code1 "let foo = 10 in foo end"
-	code2 "let foo x = x * x in foo 10 end"
-	code3 "let foo x y = x * x + y * y in foo 3 4 end"]
+        code2 "let foo x = x * x in foo 10 end"
+        code3 "let foo x y = x * x + y * y in foo 3 4 end"]
     (fact "let with val and fun decls"
-      (eisen= code1) => 10
-      (eisen= code2) => 100
-      (eisen= code3) => 25)))
+          (eisen= code1) => 10
+          (eisen= code2) => 100
+          (eisen= code3) => 25)))
 
 
 (deftest test-1120
   (let [code1 "let foo = 50; bar x = x + x in bar foo end"]
     (fact "let with combined val and fun  bindings"
-      (eisen= code1) => 100)))
+          (eisen= code1) => 100)))
 
 
 (deftest test-1125
   (let [code1 "let foo = 50; bar = 20; up x = x+1; dec x = x-1;"
-	code2 "  in up foo + dec bar end"]
+        code2 "  in up foo + dec bar end"]
     (fact "let with multiple combined val and fun  bindings"
-      (eisen= (str code1 code2)) => 70)))
+          (eisen= (str code1 code2)) => 70)))
 
 
 (deftest test-1130
   (let [code1 "let foo = 50 in let bar = 20 in foo * bar end end"]
     (fact "nested lets"
-      (eisen= code1) => 1000)))
+          (eisen= code1) => 1000)))
 
 
 (deftest test-1135
   (let [code1 "let foo = 99; bar = foo; baz = bar in baz+1 end"]
     (fact "let with three bindings, with reference to previous ones"
-      (eisen= code1) => 100)))
+          (eisen= code1) => 100)))
 
 
 ;; +-------------------------------------------------------------+
@@ -523,30 +523,30 @@
 
 
 (deftest test-1200
-  (let [code1 "fun fact n = if n < 0 then -1 "
-	code2 "else letrec f x = if x == 0 then 1 else x * f (x-1) "
-	code3 "in f n end"]
+  (let [code1 "fun factorial n = if n < 0 then -1 "
+        code2 "else letrec f x = if x == 0 then 1 else x * f (x-1) "
+        code3 "in f n end"]
     (eisen (str code1 code2 code3))
     (fact "recursive function in letrec"
-      (eisen= "fact 5") => 120
-      (eisen= "fact (-1)") => -1)))
+          (eisen= "factorial 5") => 120
+          (eisen= "factorial (-1)") => -1)))
 
 
 (deftest test-1205
   (let [code1 "letrec foo x = if x > 0 then bar (x-1) else 0;"
-	code2 "       bar x = if x > 0 then foo (x-1) else 0;"
-	code3 "       in foo 5 end"]
+        code2 "       bar x = if x > 0 then foo (x-1) else 0;"
+        code3 "       in foo 5 end"]
     (fact "letrec with mutually recursive functions"
-      (eisen= (str code1 code2 code3)) => 0)))
+          (eisen= (str code1 code2 code3)) => 0)))
 
 
 (deftest test-1210
   (let [code1 "letrec zap = 0; "
         code2 "       foo x = if x > zap then bar (x-1) else zap;"
-	code3 "       bar x = if x > 0 then foo (x-1) else zap;"
-	code4 "       in foo 5 end"]
+        code3 "       bar x = if x > 0 then foo (x-1) else zap;"
+        code4 "       in foo 5 end"]
     (fact "letrec with mutually recursive functions, using a val decl"
-      (eisen= (str code1 code2 code3 code4)) => 0)))
+          (eisen= (str code1 code2 code3 code4)) => 0)))
 
 
 ;; +-------------------------------------------------------------+
@@ -558,16 +558,16 @@
   (eisen "declare baz")
   (eisen "fun foo x = x + baz x")
   (eisen "fun baz n = n * 10")
-    (fact "forward declaration"
-      (eisen= "foo 5") => 55))
+  (fact "forward declaration"
+        (eisen= "foo 5") => 55))
 
 
 (deftest test-1305
   (eisen "declare bar!")
   (eisen "fun foo x = x + bar! x")
   (eisen "fun bar! n = n * 10")
-    (fact "forward declaration"
-      (eisen= "foo 5") => 55))
+  (fact "forward declaration"
+        (eisen= "foo 5") => 55))
 
 
 (deftest test-1310
@@ -575,8 +575,8 @@
   (eisen "fun foo x = x + bar! x + baz? x")
   (eisen "fun bar! n = n * 10")
   (eisen "fun baz? n = n + 10")
-    (fact "forward declaration"
-      (eisen= "foo 5") => 70))
+  (fact "forward declaration"
+        (eisen= "foo 5") => 70))
 
 
 ;; +-------------------------------------------------------------+
@@ -587,18 +587,18 @@
 (deftest test-1400
   (let [code "let sq = fn x => x * x in sq 9 end"]
     (fact "use a fn value in a let expression"
-      (eisen= code) => 81)))
+          (eisen= code) => 81)))
 
 
 (deftest test-1405
   (eisen "val dup = fn x => x + x")
   (fact "use a fn value in a val declaration"
-    (eisen= "dup 9") => 18))
+        (eisen= "dup 9") => 18))
 
 
 (deftest test-1410
   (fact "use a fn value as an argument"
-    (eisen= "map (fn x => x * x) [1 5]") => [1 4 9 16 25]))
+        (eisen= "map (fn x => x * x) [1 5]") => [1 4 9 16 25]))
 
 
 ;; +-------------------------------------------------------------+
@@ -612,13 +612,13 @@
   (let [code "when true do 99 end"]
     (init-eisen)
     (fact "a simple when"
-      (eisen= code) => 99)))
+          (eisen= code) => 99)))
 
 
 (deftest test-1505
   (let [code "when true do 99; 101 end"]
     (fact "a simple when"
-      (eisen= code) => 101)))
+          (eisen= code) => 101)))
 
 
 ;; +-------------------------------------------------------------+
@@ -630,7 +630,7 @@
   (eisen "val cntr = atom 0")
   (eisen "while deref cntr < 5 do swap! cntr inc; deref cntr end")
   (fact "a simple loop with while"
-    (eisen= "deref cntr") => 5))
+        (eisen= "deref cntr") => 5))
 
 
 ;; +-------------------------------------------------------------+
@@ -641,13 +641,13 @@
 (deftest test-1700
   (let [code "cond false => 99; true => 101 end"]
     (fact "a simple cond"
-      (eisen= code) => 101)))
+          (eisen= code) => 101)))
 
 
 (deftest test-1705
   (let [code "cond (1 >= 3) => \"1\"; (2 >= 3) => \"2\"; (3 >= 3) => \"3\"; end"]
     (fact "a cond expr"
-      (eisen= code) => "3")))
+          (eisen= code) => "3")))
 
 
 ;; +-------------------------------------------------------------+
@@ -658,7 +658,7 @@
 (deftest test-1800
   (let [code "whenFirst x <- [1 5] do x + x end"]
     (fact "whenFirst gets the first element"
-      (eisen= code) => 2)))
+          (eisen= code) => 2)))
 
 
 ;; +-------------------------------------------------------------+
@@ -668,9 +668,9 @@
 
 (deftest test-1900
   (let [c1 "loop i = 0; x = 2 in "
-	c2 "if i < 8 then recur (i + 1) (x * 2) else x end"]
+        c2 "if i < 8 then recur (i + 1) (x * 2) else x end"]
     (fact "a loop with two bindings"
-      (eisen= (str c1 c2)) => 512)))
+          (eisen= (str c1 c2)) => 512)))
 
 
 ;; +-------------------------------------------------------------+
@@ -682,13 +682,13 @@
   (init-eisen)
   (let [code "for [n <- [1 10]] n*n"]
     (fact "a for with one binding"
-      (eisen= code) => '(1 4 9 16 25 36 49 64 81 100))))
+          (eisen= code) => '(1 4 9 16 25 36 49 64 81 100))))
 
 
 (deftest test-2005
   (let [code "for [ x <- [1 10], y <- [1 10] when x > y while x+y < 8] [x,y]"]
     (fact "a for with two bindings"
-      (eisen= code) => '((2 1) (3 1) (3 2) (4 1) (4 2) (4 3) (5 1) (5 2) (6 1)))))
+          (eisen= code) => '((2 1) (3 1) (3 2) (4 1) (4 2) (4 3) (5 1) (5 2) (6 1)))))
 
 
 ;; +-------------------------------------------------------------+
@@ -704,7 +704,7 @@
         c4 "  2 => \"2\";"
         c5 "  3 => \"3\" end"]
     (fact "a simple case"
-      (eisen= (str c1 c2 c3 c4 c5)) => "2")))
+          (eisen= (str c1 c2 c3 c4 c5)) => "2")))
 
 
 ;; +-------------------------------------------------------------+
@@ -715,5 +715,5 @@
 (deftest test-2200
   (let [code1 "let foo = 99 in let foo = 101 in foo end; foo end"]
     (fact "let with a shadowed value"
-      (eisen= code1) => 99)))
+          (eisen= code1) => 99)))
 

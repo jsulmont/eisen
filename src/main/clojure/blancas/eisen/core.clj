@@ -6,12 +6,12 @@
 ;; the terms of this license.
 ;; You must not remove this notice, or any other, from this software.
 
-(ns ^{:doc "Main module of the Eisen translator."
+(ns ^{:doc    "Main module of the Eisen translator."
       :author "Armando Blancas"}
-  blancas.eisen.core
+blancas.eisen.core
   (:require [blancas.eisen.clojure :as cc])
   (:use [blancas.eisen.parser :only (eisen-code)]
-	[blancas.eisen.trans :only (trans add-auto-decl)]
+        [blancas.eisen.trans :only (trans add-auto-decl)]
         [blancas.kern.core :only (parse run print-error f->s)]))
 
 
@@ -32,7 +32,7 @@
      (if (:ok st)
        {:ok true :decls (:value st)}
        {:ok false :error (with-out-str (print-error st))}))))
-  
+
 
 (defn eisen
   "Translates the supplied Eisen code into Clojure and evaluates
@@ -47,13 +47,13 @@
   ([text]
    (eisen text ""))
   ([text source]
-    (let [current (symbol (str *ns*))]
-      (binding [*ns* *ns*]
-        (try
-          (let [ast (parse-eisen text source)]
-            (if (:ok ast) (trans (:decls ast)) ast))
-          (finally
-            (in-ns current)))))))
+   (let [current (symbol (str *ns*))]
+     (binding [*ns* *ns*]
+       (try
+         (let [ast (parse-eisen text source)]
+           (if (:ok ast) (trans (:decls ast)) ast))
+         (finally
+           (in-ns current)))))))
 
 
 (defn eisen=
@@ -63,10 +63,10 @@
   ([text]
    (eisen= text ""))
   ([text source]
-    (let [e (eisen text source)]
-      (if (:ok e)
-        (:value e)
-        (println (:error e))))))
+   (let [e (eisen text source)]
+     (if (:ok e)
+       (:value e)
+       (println (:error e))))))
 
 
 (defn eisen*
@@ -135,7 +135,7 @@
    (init-eisen)
    (let [code (read-eisen nsp p1 p2 p3)]
      (when-not (= code "//")
-       (if (seq code) 
+       (if (seq code)
          (println (eisen= code)))
        (recur nsp p1 p2 p3)))))
 
@@ -201,11 +201,11 @@
   (let [n (count args)]
     (when (pos? n)
       (when (odd? n)
-	(throw (Exception. "Macro host-model takes an even number of arguments")))
+        (throw (Exception. "Macro host-model takes an even number of arguments")))
       (let [pairs (for [[k v] (partition 2 args)]
-		    `('~(clojure.core/symbol (clojure.core/name k)) ~v))]
+                    `('~(clojure.core/symbol (clojure.core/name k)) ~v))]
         `(clojure.core/swap! model clojure.core/assoc
-			     ~@(clojure.core/apply concat pairs))))))
+                             ~@(clojure.core/apply concat pairs))))))
 
 
 (defmacro with-host-model
@@ -220,7 +220,7 @@
   "Looks up a key in the model and returns its value.
    A key must be an unquoted symbol."
   [k] `(clojure.core/get @blancas.eisen.core/model
-			 '~(clojure.core/symbol (clojure.core/name k))))
+                         '~(clojure.core/symbol (clojure.core/name k))))
 
 
 (defmacro call
@@ -238,11 +238,11 @@
   ([sym]
    `(host-name ~sym nil))
   ([sym alias]
-   (let [name  (symbol (name sym))
-         nspc  (symbol (or (namespace sym) (str *ns*)))
-         rcmd  (if alias
-                 `(refer '~nspc :rename {'~name '~alias})
-                 `(refer '~nspc :only '~(list name)))]
+   (let [name (symbol (name sym))
+         nspc (symbol (or (namespace sym) (str *ns*)))
+         rcmd (if alias
+                `(refer '~nspc :rename {'~name '~alias})
+                `(refer '~nspc :only '~(list name)))]
      `(do (ns eisen.user) ~rcmd (ns ~nspc)))))
 
 
@@ -345,77 +345,77 @@
    clojure.xml
       parse"
   []
-  (add-expression  :when-expr    cc/whenex  cc/trans-whenex  "when")
-  (add-expression  :while-expr   cc/whileex cc/trans-whileex "while")
-  (add-expression  :loop-expr    cc/loopex  cc/trans-loopex  "loop")
-  (add-expression  :whenf-expr   cc/whenfex cc/trans-whenfex "whenFirst")
-  (add-expression  :cljcond-expr cc/cljcond cc/trans-cljcond "cond")
-  (add-expression  :case-expr    cc/caseex  cc/trans-caseex  "case" "of")
-  (add-expression  :for-expr     cc/forex   cc/trans-forex   "for" "while" "when")
-  (add-expression  :doseq-expr   cc/doseqex cc/trans-doseqex "doseq" "while" "when")
-  (add-expression  :wopen-expr   cc/wopenex cc/trans-wopenex "withOpen")
-  (add-expression  :str-expr     cc/strex   cc/trans-strex   "asString")
-  (add-expression  :wstr-expr    cc/wstrex  cc/trans-wstrex  "withString")
-  (add-expression  :trans-expr   cc/transex cc/trans-transex
-		   "locking" "io!" "sync" "dosync")
+  (add-expression :when-expr cc/whenex cc/trans-whenex "when")
+  (add-expression :while-expr cc/whileex cc/trans-whileex "while")
+  (add-expression :loop-expr cc/loopex cc/trans-loopex "loop")
+  (add-expression :whenf-expr cc/whenfex cc/trans-whenfex "whenFirst")
+  (add-expression :cljcond-expr cc/cljcond cc/trans-cljcond "cond")
+  (add-expression :case-expr cc/caseex cc/trans-caseex "case" "of")
+  (add-expression :for-expr cc/forex cc/trans-forex "for" "while" "when")
+  (add-expression :doseq-expr cc/doseqex cc/trans-doseqex "doseq" "while" "when")
+  (add-expression :wopen-expr cc/wopenex cc/trans-wopenex "withOpen")
+  (add-expression :str-expr cc/strex cc/trans-strex "asString")
+  (add-expression :wstr-expr cc/wstrex cc/trans-wstrex "withString")
+  (add-expression :trans-expr cc/transex cc/trans-transex
+                  "locking" "io!" "sync" "dosync")
 
   (add-auto-decl
     'clojure.core
-    { :rename {
-      'assoc-in       'assocIn
-      'drop-while     'dropWhile
-      'file-seq       'fileSeq
-      'get-in         'getIn
-      'group-by       'groupBy
-      'hash-map       'hashMap
-      'hash-set       'hashSet
-      'lazy-seq       'lazySeq
-      'line-seq       'lineSeq
-      'merge-with     'mergeWith
-      'not-any?       'notAny?
-      'not-empty      'notEmpty
-      'not-every?     'notEvery?
-      'partition-all  'partitionAll
-      'partition-by   'partitionBy
-      'pr-str         'prStr
-      'print-str      'printStr
-      'println-str    'printlnStr
-      're-find        'reFind
-      're-groups      'reGroups
-      're-matcher     'reMatcher
-      're-matches     'reMatches
-      're-pattern     'rePattern
-      're-seq         'reSeq
-      'read-line      'readLine
-      'ref-set        'refSet
-      'select-keys    'selectKeys
-      'sort-by        'sortBy
-      'sorted-map     'sortedMap
-      'sorted-map-by  'sortedMapBy
-      'sorted-set     'sortedSet
-      'sorted-set-by  'sortedSetBy
-      'split-at       'splitAt
-      'split-with     'splitWith
-      'take-last      'takeLast
-      'take-nth       'takeNth
-      'take-while     'takeWhile
-      'tree-seq       'treeSeq
-      'update-in      'updateIn
-      'xml-seq        'xmlSeq }})
+    {:rename {
+              'assoc-in      'assocIn
+              'drop-while    'dropWhile
+              'file-seq      'fileSeq
+              'get-in        'getIn
+              'group-by      'groupBy
+              'hash-map      'hashMap
+              'hash-set      'hashSet
+              'lazy-seq      'lazySeq
+              'line-seq      'lineSeq
+              'merge-with    'mergeWith
+              'not-any?      'notAny?
+              'not-empty     'notEmpty
+              'not-every?    'notEvery?
+              'partition-all 'partitionAll
+              'partition-by  'partitionBy
+              'pr-str        'prStr
+              'print-str     'printStr
+              'println-str   'printlnStr
+              're-find       'reFind
+              're-groups     'reGroups
+              're-matcher    'reMatcher
+              're-matches    'reMatches
+              're-pattern    'rePattern
+              're-seq        'reSeq
+              'read-line     'readLine
+              'ref-set       'refSet
+              'select-keys   'selectKeys
+              'sort-by       'sortBy
+              'sorted-map    'sortedMap
+              'sorted-map-by 'sortedMapBy
+              'sorted-set    'sortedSet
+              'sorted-set-by 'sortedSetBy
+              'split-at      'splitAt
+              'split-with    'splitWith
+              'take-last     'takeLast
+              'take-nth      'takeNth
+              'take-while    'takeWhile
+              'tree-seq      'treeSeq
+              'update-in     'updateIn
+              'xml-seq       'xmlSeq}})
 
   (add-auto-decl
-    'clojure.java.io { :only '(file reader writer) })
+    'clojure.java.io {:only '(file reader writer)})
 
   (add-auto-decl
     'clojure.java.io
-    { :rename {
-      'input-stream 'inputStream
-      'output-stream 'outputStream }})
+    {:rename {
+              'input-stream  'inputStream
+              'output-stream 'outputStream}})
 
   (add-auto-decl
     'clojure.string
-    { :only '(blank? join split trim)
-      :rename {'split-lines 'splitLines} })
+    {:only   '(blank? join split trim)
+     :rename {'split-lines 'splitLines}})
 
   (add-auto-decl
-    'clojure.xml { :only '(parse) }))
+    'clojure.xml {:only '(parse)}))
